@@ -1,5 +1,5 @@
 import sys
-#class definitions
+
 class Record:
     """Represent a record"""
     def __init__(self, cat, description, amount):
@@ -32,6 +32,8 @@ class Records:
             for i in read_list:
                 tmp = i.split(',')
                 self._records.append(Record(tmp[0], tmp[1], int(tmp[2])))
+
+            print('Welcome back!')
         except FileNotFoundError:
             try:
                 self._initial_money = int(input("How much money do you have?"))
@@ -102,6 +104,7 @@ class Records:
             fh.writelines(save_records)
    
 class Categories:
+    """Maintain the category list and provide some methods."""
     def __init__(self):
         self._categories = ['expense', ['food', ['meal', 'snack', 'drink'], 'transportation', ['bus', 'train', 'texi']], \
         'income', ['salary', 'bonus']]
@@ -158,7 +161,7 @@ class Categories:
             return True if categories == category else []
 
         return find_subcategories_inner(desired_categories, self._categories)
- 
+
 #main program starts here
 records = Records()
 categories = Categories()
