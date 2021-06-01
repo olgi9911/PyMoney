@@ -135,32 +135,17 @@ class Categories:
 
     def find_subcategories(self, desired_categories):
         """Find sub categories of a specific category."""
-        def flatten(L):
-            """Flatten an irregular list."""
-            if type(L) == list:
-                result = []
-                for child in L:
-                    result.extend(flatten(child))
-                return result
-            else:
-                return [L]
-
-        def find_subcategories_inner(category, categories):
+        def find_subcategories_gen(category, categories, found = False):
             if type(categories) == list:
-                for val in categories:
-                    part = find_subcategories_inner(category, val)
-                    if part == True:
-                        index = categories.index(val)
-                        if index + 1 < len(categories) and \
-                            type(categories[index + 1]) == list:
-                            return flatten(categories[index:index + 2])
-                        else:
-                            return [val]
-                    if part != []:
-                        return part
-            return True if categories == category else []
-
-        return find_subcategories_inner(desired_categories, self._categories)
+                for index, child in enumerate(categories):
+                    yield from find_subcategories_gen(category, child, found)
+                    if child == category and index + 1 < len(categories)\
+                        and type(categories[index + 1]) == list:
+                        yield from find_subcategories_gen(category, categories[index + 1], True)
+            else:
+                if categories == category or found == True:
+                    yield categories
+        return [i for i in find_subcategories_gen(desired_categories, self._categories)]
 
 #main program starts here
 records = Records()
